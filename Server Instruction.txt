@@ -1,0 +1,40 @@
+#########################################
+SERVER INSTRUCTION
+
+Run Fast API: py -m uvicorn app:app --host 0.0.0.0 --port 8000 (make sure to cd Documents\VERA\Online_demo)
+Run public tunneling: cloudflared tunnel --url http://localhost:8000
+then change the url in index.js
+Deploy worker: wrangler deploy (make sure to cd vera-api) cd Documents\VERA\Online_demo\vera-api
+check if it works: curl.exe https://vera-api.vera-api-ned.workers.dev/health
+
+
+#########################################
+VERSION 1.0: an usable conversational AI that uses speeches as input and ouput. It's turn-based, meaning user speaks then ai speaks. The speeches will be transcribed and shown as the text bubbles on the right section of the web as a chat log. 
+
+Main components: ASR (Whisper-large), LLM (LLAMA 3.0) and TTS (fine-tuned)
+
+*List of fixed issues and features:
+
+1/ Features/Implementations:
+- "Pause" or "Unpause" through commands and physical button
+- Real-time time and date check
+- Multiple users can use the AI at the same time without having the same history (users have different histories by using different session id)
+- Feedback feature on PC
+- Implemented UI on phones vs PC
+- Server health check visible for users
+- 2 Persona provided: Default (LLama 3.0 or JARVIS, which is similar to JARVIS from the Ironman; LLama is more task-oriented, while JARVIS allows users to ramble and affirm when needed in addition to its similar lingo to the one from Ironman series)
+- Balanced and informative UX 
+
+2/ Issues
+- Fixed audio issues (using two layers to filter non-speech, including zcr, audio length, and volume threshold rms after VAD and ASR confidence score after transcription; unpause audio or empty audio will not be added to history, and balanced silence time for users to finish their speech) 
+- Fixed concurrent usage of the AI due to one gpu (Locking certain modules (ASR, LLM, TTS) for best performance)
+- Edge case for exploits (Maximum feedback size, maximum users, hide tunnel name, max history message is 40 so it won't exceed RAM and add clean up session if idle for too long)
+- Credibility (remove user speech saving to local; only prints the transcription on the terminal for debugging, which is short-termed)
+
+#########################################
+VERSION 2.0: 
+
+FUTURE PLAN:
+- ADDING CONCURRENT RECORDING (Meaning interruptibility using streaming tts and changing recording system)
+- IMPROVED TTS (coqui)
+
